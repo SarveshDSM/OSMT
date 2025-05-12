@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # === SET YOUR LOCAL DESKTOP PATHS ===
-EXCEL_DIR = r"E:\data\data.xlsx"  # Your Excel file path on the E drive
+EXCEL_DIR = r"E:\data.xlsx"  # Your correct Excel file path
 MEMO_DIR = r"C:\Users\YourUsername\Desktop\MeterApp\memos"  # Your Memo folder path
 
 # === Find the Excel file (this is adapted for your case) ===
@@ -26,8 +26,12 @@ if meter_no:
     else:
         try:
             # Read the Excel file
-            df = pd.read_excel(excel_path, dtype=str)
+            df = pd.read_excel(excel_path, dtype=str)  # Make sure everything is treated as strings
             df.fillna("", inplace=True)
+
+            # Print out the first few rows to check the structure
+            st.write("First few rows in the Excel file:")
+            st.write(df.head())  # Display the first few rows of the DataFrame to diagnose
 
             # Find the row matching the entered Meter No.
             matched = df[df['Meter No.'] == meter_no]
