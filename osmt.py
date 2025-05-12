@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # === SET YOUR LOCAL WINDOWS PATHS ===
-EXCEL_DIR = r"D:\OneDrive - Tata Power\High Registration Data\NITIN RANA\AI"
+EXCEL_DIR = r"E:\OneDrive\Desktop\data.xlsx"
 MEMO_DIR = r"D:\OneDrive - Tata Power\High Registration Data\memos for OSMT\New folder (2)\2022-23\Oct 22 onwards"
 
 # === Find the first Excel file in the Excel folder ===
