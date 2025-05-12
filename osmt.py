@@ -3,8 +3,8 @@ import pandas as pd
 import os
 
 # === CONFIGURATION ===
-CSV_PATH = "data.csv"          # CSV must be in the same folder as app.py
-PDF_FOLDER = "E:\\"            # Memo PDFs are stored in E drive, named by Meter No.
+CSV_PATH = "data.csv"         # CSV should be in the same folder as app.py
+PDF_FOLDER = "E:\\"           # PDFs are stored in the E drive, named by Meter No.
 
 # === Streamlit UI ===
 st.set_page_config(page_title="Meter No. Lookup", layout="centered")
@@ -30,8 +30,18 @@ if meter_no:
                 st.write("**OSMT Request:**", row.get('OSMT Request', 'N/A'))
                 st.write("**Status:**", row.get('Status', 'N/A'))
 
-                # Check for corresponding memo PDF
+                # Debug: Check what file path we are looking for
                 memo_path = os.path.join(PDF_FOLDER, f"{meter_no}.pdf")
+                st.write("🔍 Looking for file:", memo_path)
+
+                # Optional: List all files in E:\ drive for visual confirmation
+                try:
+                    all_files = os.listdir(PDF_FOLDER)
+                    st.write("📁 Files in E:\\:", all_files)
+                except Exception as e:
+                    st.error(f"❌ Error listing E:\\: {e}")
+
+                # Check if PDF exists at E:\<meter_no>.pdf
                 if os.path.exists(memo_path):
                     with open(memo_path, "rb") as f:
                         st.download_button("📄 Download Memo PDF",
@@ -44,6 +54,7 @@ if meter_no:
                 st.error("❌ Meter No. not found in the data.")
     except Exception as e:
         st.error(f"🚨 Error reading CSV file: {e}")
+
 
 
 
