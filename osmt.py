@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # === SET YOUR LOCAL DESKTOP PATHS ===
-EXCEL_DIR = r"E:\OneDrive\Desktop\data.xlsx"  # Your Excel file path
+EXCEL_DIR = r"E:\data.xlsx"  # Your Excel file path on the E drive
 MEMO_DIR = r"C:\Users\YourUsername\Desktop\MeterApp\memos"  # Your Memo folder path
 
 # === Find the Excel file (this is adapted for your case) ===
@@ -55,5 +55,6 @@ if meter_no:
                 st.error("❌ Meter No. not found in the Excel data.")
         except Exception as e:
             st.error(f"🚨 Error reading Excel file: {e}")
+
 
 
