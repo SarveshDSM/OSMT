@@ -30,23 +30,11 @@ if meter_no:
                 st.write("**OSMT Request:**", row.get('OSMT Request', 'N/A'))
                 st.write("**Status:**", row.get('Status', 'N/A'))
 
-                # Debug: Check what file path we are looking for
+                # Check if the PDF exists directly in C:\ and create the file path
                 memo_path = os.path.join(PDF_FOLDER, f"{meter_no}.pdf")
                 st.write("🔍 Looking for file:", memo_path)
 
-                # Debug: Check if the C: drive is accessible
-                try:
-                    # Try listing the files in the C: drive
-                    all_files = os.listdir(PDF_FOLDER)
-                    st.write("📁 Files in C:\\:", all_files)
-                except FileNotFoundError:
-                    st.error("❌ Could not find the C: drive folder. Please make sure the drive is accessible.")
-                except PermissionError:
-                    st.error("❌ Permission denied. Make sure the app has access to the C: drive.")
-                except Exception as e:
-                    st.error(f"❌ Unexpected error: {e}")
-
-                # Check if PDF exists at C:\<meter_no>.pdf
+                # Check if the PDF exists
                 if os.path.exists(memo_path):
                     with open(memo_path, "rb") as f:
                         st.download_button("📄 Download Memo PDF",
@@ -59,6 +47,7 @@ if meter_no:
                 st.error("❌ Meter No. not found in the data.")
     except Exception as e:
         st.error(f"🚨 Error reading CSV file: {e}")
+
 
 
 
