@@ -3,28 +3,24 @@ import pandas as pd
 import os
 
 # === CONFIGURATION ===
-CSV_URL = "https://raw.githubusercontent.com/sujata-guruji/meter-app/main/data.csv"  # ← Replace with your actual GitHub raw CSV URL
-MEMO_FOLDER = r"E:\data\memos"  # ← Optional local folder for memo PDFs (update or leave blank if not used)
+CSV_PATH = "data.csv"  # This assumes data.csv is in the same folder as app.py
+MEMO_FOLDER = r"E:\data\memos"  # Optional folder for PDF memos
 
 # === Streamlit UI ===
 st.set_page_config(page_title="Meter No. Lookup", layout="centered")
 st.title("🔎 Meter Info & Memo Downloader")
 
-st.markdown("Enter a Meter Number to search its details from the CSV stored on GitHub.")
-
 meter_no = st.text_input("Enter Meter No.").strip()
 
 if meter_no:
     try:
-        # Read CSV file directly from GitHub
-        df = pd.read_csv(CSV_URL, dtype=str)
+        # Load local CSV
+        df = pd.read_csv(CSV_PATH, dtype=str)
         df.fillna("", inplace=True)
 
-        # Validate column
         if 'Meter No.' not in df.columns:
             st.error("❌ 'Meter No.' column not found in the CSV file.")
         else:
-            # Filter for matching Meter No.
             matched = df[df['Meter No.'] == meter_no]
 
             if not matched.empty:
@@ -34,7 +30,7 @@ if meter_no:
                 st.write("**OSMT Request:**", row.get('OSMT Request', 'N/A'))
                 st.write("**Status:**", row.get('Status', 'N/A'))
 
-                # Check for memo PDF (optional)
+                # Optional: PDF download
                 if MEMO_FOLDER:
                     memo_filename = f"{meter_no}.pdf"
                     memo_path = os.path.join(MEMO_FOLDER, memo_filename)
@@ -46,7 +42,7 @@ if meter_no:
                                                file_name=memo_filename,
                                                mime="application/pdf")
                     else:
-                        st.warning("⚠️ Memo PDF not found for this Meter No. in local folder.")
+                        st.warning("⚠️ Memo PDF not found in local folder.")
             else:
                 st.error("❌ Meter No. not found in the data.")
     except Exception as e:
