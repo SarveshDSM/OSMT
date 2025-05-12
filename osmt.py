@@ -2,38 +2,29 @@ import streamlit as st
 import pandas as pd
 import os
 
-# === SET YOUR LOCAL DESKTOP PATHS ===
-EXCEL_DIR = r"E:\data\data1.csv"  # Your correct Excel file path
-MEMO_DIR = r"C:\Users\YourUsername\Desktop\MeterApp\memos"  # Your Memo folder path
-
-# === Find the Excel file (this is adapted for your case) ===
-def find_excel_file(file_path):
-    if os.path.exists(file_path):
-        return file_path
-    return None
+# === CONFIGURATION ===
+CSV_URL = "https://raw.githubusercontent.com/your-username/your-repo/main/data.csv"  # ← Replace with your actual GitHub raw CSV URL
+MEMO_FOLDER = r"E:\data\memos"  # ← Optional local folder for memo PDFs (update or leave blank if not used)
 
 # === Streamlit UI ===
 st.set_page_config(page_title="Meter No. Lookup", layout="centered")
 st.title("🔎 Meter Info & Memo Downloader")
 
+st.markdown("Enter a Meter Number to search its details from the CSV stored on GitHub.")
+
 meter_no = st.text_input("Enter Meter No.").strip()
 
 if meter_no:
-    excel_path = find_excel_file(EXCEL_DIR)
+    try:
+        # Read CSV file directly from GitHub
+        df = pd.read_csv(CSV_URL, dtype=str)
+        df.fillna("", inplace=True)
 
-    if not excel_path or not os.path.exists(excel_path):
-        st.error(f"❌ Excel file not found in: {EXCEL_DIR}")
-    else:
-        try:
-            # Read the Excel file
-            df = pd.read_excel(excel_path, dtype=str)  # Make sure everything is treated as strings
-            df.fillna("", inplace=True)
-
-            # Print out the first few rows to check the structure
-            st.write("First few rows in the Excel file:")
-            st.write(df.head())  # Display the first few rows of the DataFrame to diagnose
-
-            # Find the row matching the entered Meter No.
+        # Validate column
+        if 'Meter No.' not in df.columns:
+            st.error("❌ 'Meter No.' column not found in the CSV file.")
+        else:
+            # Filter for matching Meter No.
             matched = df[df['Meter No.'] == meter_no]
 
             if not matched.empty:
@@ -43,22 +34,24 @@ if meter_no:
                 st.write("**OSMT Request:**", row.get('OSMT Request', 'N/A'))
                 st.write("**Status:**", row.get('Status', 'N/A'))
 
-                # Check for corresponding memo PDF
-                memo_filename = f"{meter_no}.pdf"
-                memo_path = os.path.join(MEMO_DIR, memo_filename)
+                # Check for memo PDF (optional)
+                if MEMO_FOLDER:
+                    memo_filename = f"{meter_no}.pdf"
+                    memo_path = os.path.join(MEMO_FOLDER, memo_filename)
 
-                if os.path.exists(memo_path):
-                    with open(memo_path, "rb") as f:
-                        st.download_button("📄 Download Memo PDF",
-                                           data=f,
-                                           file_name=memo_filename,
-                                           mime="application/pdf")
-                else:
-                    st.warning("⚠️ Memo PDF not found for this Meter No.")
+                    if os.path.exists(memo_path):
+                        with open(memo_path, "rb") as f:
+                            st.download_button("📄 Download Memo PDF",
+                                               data=f,
+                                               file_name=memo_filename,
+                                               mime="application/pdf")
+                    else:
+                        st.warning("⚠️ Memo PDF not found for this Meter No. in local folder.")
             else:
-                st.error("❌ Meter No. not found in the Excel data.")
-        except Exception as e:
-            st.error(f"🚨 Error reading Excel file: {e}")
+                st.error("❌ Meter No. not found in the data.")
+    except Exception as e:
+        st.error(f"🚨 Error reading CSV file: {e}")
+
 
 
 
