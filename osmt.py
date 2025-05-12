@@ -2,28 +2,31 @@ import streamlit as st
 import pandas as pd
 import os
 
-# === PATHS ===
+# === SET YOUR LOCAL WINDOWS PATHS ===
 EXCEL_DIR = r"D:\OneDrive - Tata Power\High Registration Data\NITIN RANA\AI"
 MEMO_DIR = r"D:\OneDrive - Tata Power\High Registration Data\memos for OSMT\New folder (2)\2022-23\Oct 22 onwards"
 
-# === FIND THE FIRST EXCEL FILE IN THE FOLDER ===
+# === Find the first Excel file in the Excel folder ===
 def find_excel_file(folder):
-    for file in os.listdir(folder):
-        if file.endswith(".xlsx") or file.endswith(".xls"):
-            return os.path.join(folder, file)
+    try:
+        for file in os.listdir(folder):
+            if file.endswith(".xlsx") or file.endswith(".xls"):
+                return os.path.join(folder, file)
+    except FileNotFoundError:
+        return None
     return None
 
-# === STREAMLIT UI ===
-st.set_page_config(page_title="Meter Info Lookup", layout="centered")
-st.title("🔎 Meter Search & Memo Downloader")
+# === Streamlit UI ===
+st.set_page_config(page_title="Meter No. Lookup", layout="centered")
+st.title("🔎 Meter Info & Memo Downloader")
 
 meter_no = st.text_input("Enter Meter No.").strip()
 
 if meter_no:
     excel_path = find_excel_file(EXCEL_DIR)
 
-    if not excel_path:
-        st.error("❌ No Excel file found in the folder.")
+    if not excel_path or not os.path.exists(excel_path):
+        st.error(f"❌ Excel file not found in: {EXCEL_DIR}")
     else:
         try:
             df = pd.read_excel(excel_path, dtype=str)
@@ -34,11 +37,11 @@ if meter_no:
             if not matched.empty:
                 row = matched.iloc[0]
                 st.success("✅ Record Found")
-                st.write("**SR Creation Date:**", row.get('SR Creation Date', 'Not Available'))
-                st.write("**OSMT Request:**", row.get('OSMT Request', 'Not Available'))
-                st.write("**Status:**", row.get('Status', 'Not Available'))
+                st.write("**SR Creation Date:**", row.get('SR Creation Date', 'N/A'))
+                st.write("**OSMT Request:**", row.get('OSMT Request', 'N/A'))
+                st.write("**Status:**", row.get('Status', 'N/A'))
 
-                # Look for PDF
+                # Check for corresponding memo PDF
                 memo_filename = f"{meter_no}.pdf"
                 memo_path = os.path.join(MEMO_DIR, memo_filename)
 
@@ -51,8 +54,8 @@ if meter_no:
                 else:
                     st.warning("⚠️ Memo PDF not found for this Meter No.")
             else:
-                st.error("❌ Meter No. not found in data.")
+                st.error("❌ Meter No. not found in the Excel data.")
         except Exception as e:
-            st.error(f"🚨 Error reading Excel: {e}")
+            st.error(f"🚨 Error reading Excel file: {e}")
 
 
