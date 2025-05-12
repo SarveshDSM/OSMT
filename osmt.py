@@ -2,18 +2,14 @@ import streamlit as st
 import pandas as pd
 import os
 
-# === SET YOUR LOCAL WINDOWS PATHS ===
-EXCEL_DIR = r"E:\OneDrive\Desktop\data.xlsx"
-MEMO_DIR = r"D:\OneDrive - Tata Power\High Registration Data\memos for OSMT\New folder (2)\2022-23\Oct 22 onwards"
+# === SET YOUR LOCAL DESKTOP PATHS ===
+EXCEL_DIR = r"E:\OneDrive\Desktop\data.xlsx"  # Your Excel file path
+MEMO_DIR = r"C:\Users\YourUsername\Desktop\MeterApp\memos"  # Your Memo folder path
 
-# === Find the first Excel file in the Excel folder ===
-def find_excel_file(folder):
-    try:
-        for file in os.listdir(folder):
-            if file.endswith(".xlsx") or file.endswith(".xls"):
-                return os.path.join(folder, file)
-    except FileNotFoundError:
-        return None
+# === Find the Excel file (this is adapted for your case) ===
+def find_excel_file(file_path):
+    if os.path.exists(file_path):
+        return file_path
     return None
 
 # === Streamlit UI ===
@@ -29,9 +25,11 @@ if meter_no:
         st.error(f"❌ Excel file not found in: {EXCEL_DIR}")
     else:
         try:
+            # Read the Excel file
             df = pd.read_excel(excel_path, dtype=str)
             df.fillna("", inplace=True)
 
+            # Find the row matching the entered Meter No.
             matched = df[df['Meter No.'] == meter_no]
 
             if not matched.empty:
