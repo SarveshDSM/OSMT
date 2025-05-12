@@ -4,7 +4,7 @@ import os
 
 # === CONFIGURATION ===
 CSV_PATH = "data.csv"         # CSV should be in the same folder as app.py
-PDF_FOLDER = "C:\\"           # PDFs are stored in the E drive, named by Meter No.
+PDF_FOLDER = "C:\\"            # Path to the root of the C drive (no folder needed)
 
 # === Streamlit UI ===
 st.set_page_config(page_title="Meter No. Lookup", layout="centered")
@@ -34,14 +34,19 @@ if meter_no:
                 memo_path = os.path.join(PDF_FOLDER, f"{meter_no}.pdf")
                 st.write("🔍 Looking for file:", memo_path)
 
-                # Optional: List all files in E:\ drive for visual confirmation
+                # Debug: Check if the C: drive is accessible
                 try:
+                    # Try listing the files in the C: drive
                     all_files = os.listdir(PDF_FOLDER)
-                    st.write("📁 Files in E:\\:", all_files)
+                    st.write("📁 Files in C:\\:", all_files)
+                except FileNotFoundError:
+                    st.error("❌ Could not find the C: drive folder. Please make sure the drive is accessible.")
+                except PermissionError:
+                    st.error("❌ Permission denied. Make sure the app has access to the C: drive.")
                 except Exception as e:
-                    st.error(f"❌ Error listing E:\\: {e}")
+                    st.error(f"❌ Unexpected error: {e}")
 
-                # Check if PDF exists at E:\<meter_no>.pdf
+                # Check if PDF exists at C:\<meter_no>.pdf
                 if os.path.exists(memo_path):
                     with open(memo_path, "rb") as f:
                         st.download_button("📄 Download Memo PDF",
@@ -49,12 +54,11 @@ if meter_no:
                                            file_name=f"{meter_no}.pdf",
                                            mime="application/pdf")
                 else:
-                    st.warning("⚠️ Memo PDF not found in E drive.")
+                    st.warning("⚠️ Memo PDF not found in C drive.")
             else:
                 st.error("❌ Meter No. not found in the data.")
     except Exception as e:
         st.error(f"🚨 Error reading CSV file: {e}")
-
 
 
 
