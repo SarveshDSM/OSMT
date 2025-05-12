@@ -4,7 +4,7 @@ import os
 
 # === CONFIGURATION ===
 CSV_PATH = "data.csv"         # CSV should be in the same folder as app.py
-PDF_FOLDER = "E:\\"           # PDFs are stored in the E drive, named by Meter No.
+PDF_FOLDER = "C:\\"           # PDFs are stored in the E drive, named by Meter No.
 
 # === Streamlit UI ===
 st.set_page_config(page_title="Meter No. Lookup", layout="centered")
