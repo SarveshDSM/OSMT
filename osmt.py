@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # === SET YOUR LOCAL DESKTOP PATHS ===
-EXCEL_DIR = r"E:\data\data.xlx"  # Your correct Excel file path
+EXCEL_DIR = r"E:\data\data1.csv"  # Your correct Excel file path
 MEMO_DIR = r"C:\Users\YourUsername\Desktop\MeterApp\memos"  # Your Memo folder path
 
 # === Find the Excel file (this is adapted for your case) ===
