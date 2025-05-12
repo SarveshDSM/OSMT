@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 # === CONFIGURATION ===
-CSV_URL = "https://raw.githubusercontent.com/your-username/your-repo/main/data.csv"  # ← Replace with your actual GitHub raw CSV URL
+CSV_URL = "https://raw.githubusercontent.com/sujata-guruji/meter-app/main/data.csv"  # ← Replace with your actual GitHub raw CSV URL
 MEMO_FOLDER = r"E:\data\memos"  # ← Optional local folder for memo PDFs (update or leave blank if not used)
 
 # === Streamlit UI ===
